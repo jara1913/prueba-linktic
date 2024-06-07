@@ -27,3 +27,6 @@ Route::post('/tasks', [TaskController::class, 'store']);
 
 # Show task endpoint
 Route::get('/tasks/{id}', [TaskController::class, 'show']);
+
+# Update task endpoint
+Route::put('/tasks/{id}', [TaskController::class, 'update']);

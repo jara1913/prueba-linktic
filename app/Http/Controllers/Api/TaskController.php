@@ -134,4 +134,71 @@ class TaskController extends Controller
 
         return response()->json($data, 200);
     }
+
+    /**
+     * Update a task by Id
+     * @param Request $request Data sent to be recorded
+     * @param Int $id Task Id
+     * @return json Response information
+     */
+    public function update(Request $request, $id)
+    {
+        # Validates the $id parameter
+        if(!is_numeric($id)) {
+            $data = [
+                'message' => 'Error validando los datos',
+                'error' => 'El Id debe ser numérico',
+                'status' => 400
+            ];
+
+            return response()->json($data, 400);
+        }
+
+        # Gets the task
+        $task = Task::find($id);
+
+        # If the task was not found
+        if (!$task) {
+            $data = [
+                'message' => "Tarea con id:{$id} no encontrado",
+                'status' => 404
+            ];
+
+            return response()->json($data, 404);
+        }
+
+        # Validates de incoming data
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|max:155',
+            'description' => 'required|max:255',
+            'status' => 'required|in:pending,in_progress,completed',
+            'due_date' => 'required|date'
+        ]);
+
+        if ($validator->fails()) {
+            $data = [
+                'message' => 'Error validando los datos',
+                'errors' => $validator->errors(),
+                'status' => 400
+            ];
+            return response()->json($data, 400);
+        }
+
+        # If the task was found and the validation was successfull
+        $task->title = $request->title;
+        $task->description = $request->description;
+        $task->status = $request->status;
+        $task->due_date = $request->due_date;
+
+        # Updates the data
+        $task->save();
+
+        $data = [
+            'message' => "Tarea con id:{$id} actualizada exitosamente",
+            'task' => $task,
+            'status' => 200
+        ];
+
+        return response()->json($data, 200);
+    }
 }
