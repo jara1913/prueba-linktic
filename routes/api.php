@@ -41,4 +41,10 @@ Route::middleware('auth:api')->group(function () {
 
     # Delete task endpoint
     Route::delete('/tasks/{id}', [TaskController::class, 'destroy']);
+
+    # Filter by status endpoint
+    Route::get('/tasks/filter/status/{status}', [TaskController::class, 'filterByStatus']);
+
+    # Filter by due date endpoint
+    Route::get('/tasks/filter/due-date/{due_date}', [TaskController::class, 'filterByDueDate']);
 });

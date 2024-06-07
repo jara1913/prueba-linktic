@@ -213,7 +213,7 @@ class TaskController extends Controller
         # Validates the $id parameter
         if (!is_numeric($id)) {
             $data = [
-                'message' => 'Data Validation Error',
+                'message' => 'Error validando los datos',
                 'error' => 'El Id debe ser numérico',
                 'status' => 400
             ];
@@ -239,6 +239,92 @@ class TaskController extends Controller
 
         $data = [
             'task' => "Tarea con id:{$id} eliminada",
+            'status' => 200
+        ];
+
+        return response()->json($data, 200);
+    }
+
+    /**
+     * Filters tasks by status
+     * @param String $status Status value to be filtered
+     * @return json Response information
+     */
+    public function filterByStatus($status): JsonResponse
+    {
+        # Validates the $status parameter
+        if (!in_array($status, ['pending', 'in_progress', 'completed'])) {
+            $data = [
+                'message' => 'Error validando los datos',
+                'error' => 'El <status> debe ser pending, in_progress o completed',
+                'status' => 400
+            ];
+
+            return response()->json($data, 400);
+        }
+
+        # Filters by status
+        $tasks = Task::where('status', $status)->get();
+
+        # If there aren't tasks
+        if ($tasks->isEmpty()) {
+            $data = [
+                'message' => "No se encontraron tareas por status:{$status}",
+                'status' => 200
+            ];
+
+            return response()->json($data, 200);
+        }
+
+        # If there are tasks
+        $data = [
+            'message' => "Tareas filtradas por status:{$status}",
+            'tasks' => $tasks,
+            'status' => 200
+        ];
+
+        return response()->json($data, 200);
+    }
+
+    /**
+     * Filters tasks by due date
+     * @param String $due_date Due date value to be filtered
+     * @return json Response information
+     */
+    public function filterByDueDate($due_date): JsonResponse
+    {
+        # Validates the $status parameter
+        $validator = Validator::make(['due_date' => $due_date], [
+            'due_date' => 'required|date_format:Y-m-d',
+        ]);
+
+        if ($validator->fails()) {
+            $data = [
+                'message' => 'Error validando los datos',
+                'error' => $validator->errors(),
+                'status' => 400
+            ];
+
+            return response()->json($data, 400);
+        }
+
+        # Filters by status
+        $tasks = Task::where('due_date', $due_date)->get();
+
+        # If there aren't tasks
+        if ($tasks->isEmpty()) {
+            $data = [
+                'message' => "No se encontraron tareas por due_date:{$due_date}",
+                'status' => 200
+            ];
+
+            return response()->json($data, 200);
+        }
+
+        # If there are tasks
+        $data = [
+            'message' => "Tareas filtradas por due_date:{$due_date}",
+            'tasks' => $tasks,
             'status' => 200
         ];
 
