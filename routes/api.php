@@ -24,3 +24,6 @@ Route::get('/tasks', [TaskController::class, 'index']);
 
 # Create tasks endpoint
 Route::post('/tasks', [TaskController::class, 'store']);
+
+# Show task endpoint
+Route::get('/tasks/{id}', [TaskController::class, 'show']);

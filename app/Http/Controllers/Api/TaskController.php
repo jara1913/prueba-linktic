@@ -93,4 +93,45 @@ class TaskController extends Controller
 
         return response()->json($data, 201);
     }
+
+    /**
+     * Show a task by Id
+     * 
+     * @param Int $id Task Id
+     * @return json Response information
+     */
+    public function show($id): JsonResponse
+    {
+        # Validates the $id parameter
+        if(!is_numeric($id)) {
+            $data = [
+                'message' => 'Error validando los datos',
+                'error' => 'El Id debe ser numérico',
+                'status' => 400
+            ];
+
+            return response()->json($data, 400);
+        }
+
+        # Gets the task
+        $task = Task::find($id);
+
+        # If the task was not found
+        if (!$task) {
+            $data = [
+                'message' => "Tarea con id:{$id} no encontrado",
+                'status' => 404
+            ];
+
+            return response()->json($data, 404);
+        }
+
+        # If the task was found
+        $data = [
+            'task' => $task,
+            'status' => 200
+        ];
+
+        return response()->json($data, 200);
+    }
 }
