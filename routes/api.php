@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\TaskController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,21 +16,29 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+# Register user endpoint
+Route::post('register', [AuthController::class, 'register']);
+
+# Login user endpoint
+Route::post('login', [AuthController::class, 'login']);
+
+# Protect the routes
+Route::middleware('auth:api')->group(function () {
+    # Logout endpoint
+    Route::post('logout', [AuthController::class, 'logout']);    
+
+    # List tasks endpoint
+    Route::get('/tasks', [TaskController::class, 'index']);
+
+    # Create tasks endpoint
+    Route::post('/tasks', [TaskController::class, 'store']);
+
+    # Show task endpoint
+    Route::get('/tasks/{id}', [TaskController::class, 'show']);
+
+    # Update task endpoint
+    Route::put('/tasks/{id}', [TaskController::class, 'update']);
+
+    # Delete task endpoint
+    Route::delete('/tasks/{id}', [TaskController::class, 'destroy']);
 });
-
-# List tasks endpoint
-Route::get('/tasks', [TaskController::class, 'index']);
-
-# Create tasks endpoint
-Route::post('/tasks', [TaskController::class, 'store']);
-
-# Show task endpoint
-Route::get('/tasks/{id}', [TaskController::class, 'show']);
-
-# Update task endpoint
-Route::put('/tasks/{id}', [TaskController::class, 'update']);
-
-# Delete task endpoint
-Route::delete('/tasks/{id}', [TaskController::class, 'destroy']);
