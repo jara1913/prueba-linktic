@@ -30,3 +30,6 @@ Route::get('/tasks/{id}', [TaskController::class, 'show']);
 
 # Update task endpoint
 Route::put('/tasks/{id}', [TaskController::class, 'update']);
+
+# Delete task endpoint
+Route::delete('/tasks/{id}', [TaskController::class, 'destroy']);
