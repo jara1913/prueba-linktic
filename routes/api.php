@@ -21,3 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 # List tasks endpoint
 Route::get('/tasks', [TaskController::class, 'index']);
+
+# Create tasks endpoint
+Route::post('/tasks', [TaskController::class, 'store']);
